@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Safety Guide: Slips, Trips & Falls</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Safety -->
+    <!-- Application Structure Plan: The SPA is designed with a three-part structure to facilitate easy learning and reference: 1) 'Understand the Risks' for foundational knowledge, 2) 'Prevention Checklists' for actionable advice, and 3) 'Key Statistics' for data-driven insights. This thematic grouping, navigated by a sticky header, allows users to explore content non-linearly based on their immediate needs (e.g., a manager might jump to checklists, while a new employee might start with definitions). This is more user-centric than the linear flow of the source document, promoting better engagement and retention. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Definitions of Slip, Trip, Fall. Goal: Inform/Compare. Method: Three-column card layout (Tailwind Grid). Interaction: N/A, layout provides clarity. Justification: Side-by-side comparison enhances understanding of distinct concepts. Library: HTML/Tailwind.
+        - Report Info: Prevention Methods. Goal: Organize/Action. Method: Interactive toggle buttons revealing checklists. Interaction: JS-powered show/hide functionality. Justification: Reduces cognitive load by presenting one checklist at a time, making the advice feel more manageable and tool-like. Library: Vanilla JS.
+        - Report Info: Fall Statistics (67%/33%). Goal: Emphasize. Method: Donut Chart. Interaction: Hover tooltips for precise data. Justification: A visual chart provides a much stronger impact for proportional data than text alone. Library: Chart.js (Canvas).
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover {
+            color: #2563eb; 
+        }
+        .tab-button.active {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-blue-600">Safety Guide</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#risks" class="nav-link text-gray-600 font-medium pb-1 border-b-2 border-transparent">Understand Risks</a>
+                <a href="#prevention" class="nav-link text-gray-600 font-medium pb-1 border-b-2 border-transparent">Prevention</a>
+                <a href="#stats" class="nav-link text-gray-600 font-medium pb-1 border-b-2 border-transparent">Statistics</a>
+            </div>
+            <div class="md:hidden">
+                <select id="mobile-nav" class="bg-white border border-gray-300 rounded-md p-2 text-gray-700">
+                    <option value="#home">Home</option>
+                    <option value="#risks">Risks</option>
+                    <option value="#prevention">Prevention</option>
+                    <option value="#stats">Statistics</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main id="home" class="container mx-auto p-6 md:p-8">
+        
+        <section class="text-center mb-16 pt-8">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Slips, Trips, and Falls</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">An interactive guide to understanding and preventing common workplace accidents. Your safety is paramount.</p>
+        </section>
+
+        <section id="risks" class="mb-16 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800">Understand the Risks</h3>
+                <p class="text-md text-gray-500 mt-2">Knowing the difference is the first step to prevention.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <h4 class="text-2xl font-bold text-blue-600 mb-4">Slip</h4>
+                    <p class="mb-4 text-gray-600">Occurs with too little friction between footwear and the walking surface, leading to a loss of balance.</p>
+                    <h5 class="font-semibold mb-2">Common Causes:</h5>
+                    <ul class="list-disc list-inside space-y-1 text-gray-600">
+                        <li>Spills, puddles, or ice</li>
+                        <li>Wet or oily surfaces</li>
+                        <li>Loose rugs or mats</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <h4 class="text-2xl font-bold text-amber-600 mb-4">Trip</h4>
+                    <p class="mb-4 text-gray-600">Occurs when the foot hits an object, and the upper body continues moving, causing a loss of balance.</p>
+                    <h5 class="font-semibold mb-2">Common Causes:</h5>
+                    <ul class="list-disc list-inside space-y-1 text-gray-600">
+                        <li>Clutter (cords, boxes)</li>
+                        <li>Poor lighting</li>
+                        <li>Uneven surfaces (steps, carpets)</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <h4 class="text-2xl font-bold text-red-600 mb-4">Fall</h4>
+                    <p class="mb-4 text-gray-600">Occurs when you are too far off your center of balance to recover, resulting from a slip or trip.</p>
+                    <h5 class="font-semibold mb-2">Types of Falls:</h5>
+                    <ul class="list-disc list-inside space-y-1 text-gray-600">
+                        <li><span class="font-medium">At same level:</span> Onto the walking surface.</li>
+                        <li><span class="font-medium">To lower level:</span> From a height or into an object.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="prevention" class="mb-16 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800">Prevention Checklists</h3>
+                <p class="text-md text-gray-500 mt-2">Use these actionable tips to create a safer environment.</p>
+            </div>
+            <div class="flex justify-center mb-8">
+                <div class="bg-gray-200 rounded-lg p-1 flex space-x-1">
+                    <button id="slip-btn" class="tab-button py-2 px-6 rounded-md font-medium transition-colors duration-300 active">Prevent Slips</button>
+                    <button id="trip-btn" class="tab-button py-2 px-6 rounded-md font-medium transition-colors duration-300">Prevent Trips</button>
+                </div>
+            </div>
+            <div id="slip-content" class="bg-white p-8 rounded-xl shadow-lg">
+                <div class="grid md:grid-cols-2 gap-x-8 gap-y-4">
+                    <div class="flex items-start space-x-3">
+                        <span class="text-blue-500 font-bold text-xl mt-1">✓</span>
+                        <p>Wipe shoes thoroughly on mats when entering.</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <span class="text-blue-500 font-bold text-xl mt-1">✓</span>
+                        <p>Wipe up any spills immediately, even small ones.</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <span class="text-blue-500 font-bold text-xl mt-1">✓</span>
+                        <p>Mark slippery areas with a sign until they are clean and dry.</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <span class="text-blue-500 font-bold text-xl mt-1">✓</span>
+                        <p>If you see a hazard on the floor, clean it up if you can.</p>
+                    </div>
+                </div>
+            </div>
+            <div id="trip-content" class="bg-white p-8 rounded-xl shadow-lg hidden">
+                 <div class="grid md:grid-cols-2 gap-x-8 gap-y-4">
+                    <div class="flex items-start space-x-3">
+                        <span class="text-amber-500 font-bold text-xl mt-1">✓</span>
+                        <p>Walk slowly and pay attention to your surroundings.</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <span class="text-amber-500 font-bold text-xl mt-1">✓</span>
+                        <p>Ensure your path is well-lit; replace burnt-out bulbs.</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <span class="text-amber-500 font-bold text-xl mt-1">✓</span>
+                        <p>Keep walkways clear of clutter like boxes, bags, and cords.</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <span class="text-amber-500 font-bold text-xl mt-1">✓</span>
+                        <p>Close drawers and cabinet doors immediately after use.</p>
+                    </div>
+                     <div class="flex items-start space-x-3">
+                        <span class="text-amber-500 font-bold text-xl mt-1">✓</span>
+                        <p>Report or correct hazards like curled rugs or chipped flooring.</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <span class="text-amber-500 font-bold text-xl mt-1">✓</span>
+                        <p>Carry only loads you can see over to maintain a clear line of sight.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="stats" class="mb-8 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800">Key Statistics</h3>
+                <p class="text-md text-gray-500 mt-2">Understanding the data behind falls.</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <p class="text-center text-gray-600 mb-6 max-w-2xl mx-auto">The majority of falls are the result of slips and trips on the same level. Falls from a height, while often more severe, are less common. This highlights the critical importance of good housekeeping and situational awareness in preventing most fall-related incidents.</p>
+                <div class="chart-container">
+                    <canvas id="fall-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="text-center p-6 bg-gray-100 mt-12">
+        <p class="text-gray-500">Stay Safe, Stay Aware. This guide is for informational purposes.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slipBtn = document.getElementById('slip-btn');
+            const tripBtn = document.getElementById('trip-btn');
+            const slipContent = document.getElementById('slip-content');
+            const tripContent = document.getElementById('trip-content');
+            const mobileNav = document.getElementById('mobile-nav');
+
+            slipBtn.addEventListener('click', () => {
+                slipContent.classList.remove('hidden');
+                tripContent.classList.add('hidden');
+                slipBtn.classList.add('active');
+                tripBtn.classList.remove('active');
+            });
+
+            tripBtn.addEventListener('click', () => {
+                tripContent.classList.remove('hidden');
+                slipContent.classList.add('hidden');
+                tripBtn.classList.add('active');
+                slipBtn.classList.remove('active');
+            });
+
+            mobileNav.addEventListener('change', (e) => {
+                const targetId = e.target.value;
+                if (targetId) {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+
+            const ctx = document.getElementById('fall-chart').getContext('2d');
+            const fallChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Falls on Same Level (from Slips/Trips)', 'Falls from a Height'],
+                    datasets: [{
+                        label: 'Types of Falls',
+                        data: [67, 33],
+                        backgroundColor: [
+                            '#3b82f6', // blue-500
+                            '#ef4444'  // red-500
+                        ],
+                        borderColor: [
+                            '#ffffff',
+                            '#ffffff'
+                        ],
+                        borderWidth: 4,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
